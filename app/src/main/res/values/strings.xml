@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">超人词典</string>
+    <string name="action_search">搜索单词</string>
+    <string name="action_settings">设置</string>
+    <string name="search_hint">搜索建议</string>
+    <string name="notice">你所查询的单词为：</string>
+</resources>
