@@ -4,4 +4,6 @@
     <string name="action_settings">设置</string>
     <string name="search_hint">搜索建议</string>
     <string name="notice">你所查询的单词为：</string>
+    <string name="daily_sen_text_1">单词意思</string>
+    <string name="daily_sen_text_2">测试测试测试</string>
 </resources>
