@@ -13,4 +13,8 @@
 
     <dimen name="body1_primary">15sp</dimen>
     <dimen name="caption_primary">13sp</dimen>
+
+    <dimen name="daily_horizontal_margin">15dp</dimen>
+    <dimen name="daily_vertical_margin">15dp</dimen>
+
 </resources>

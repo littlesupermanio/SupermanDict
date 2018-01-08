@@ -6,4 +6,11 @@
     <string name="notice">你所查询的单词为：</string>
     <string name="daily_sen_text_1">单词意思</string>
     <string name="daily_sen_text_2">测试测试测试</string>
+
+    <string name="no_network_err">当前无网络连接</string>
+
+
+    <!-- 主页 -->
+    <string name="title_daily_one">每日一句</string>
+
 </resources>

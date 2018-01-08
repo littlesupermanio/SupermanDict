@@ -6,12 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.support.v7.widget.SearchView;
 import android.view.MenuItem;
@@ -25,6 +25,8 @@ import com.hhb.supermandict.R;
 
 public class MainActivity extends AppCompatActivity{
     private DrawerLayout mDrawerLayout;
+
+    private IndexFragment indexFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +50,19 @@ public class MainActivity extends AppCompatActivity{
                 return true;
             }
         });
+
+        if (savedInstanceState != null) {
+            FragmentManager manager = getSupportFragmentManager();
+            indexFragment = (IndexFragment) manager.getFragment(savedInstanceState,"indexFragment");
+        } else {
+            indexFragment = new IndexFragment();
+        }
+
+        FragmentManager manager = getSupportFragmentManager();
+
+        manager.beginTransaction()
+                .add(R.id.container_main, indexFragment, "indexFragment")
+                .commit();
 
     }
 
