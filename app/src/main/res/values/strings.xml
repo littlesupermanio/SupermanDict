@@ -6,11 +6,34 @@
     <string name="notice">你所查询的单词为：</string>
     <string name="daily_sen_text_1">单词意思</string>
     <string name="daily_sen_text_2">测试测试测试</string>
+    <string name="retype">重新输入</string>
 
     <string name="no_network_err">当前无网络连接</string>
+    <string name="no_result">未找到该单词</string>
+    <string name="no_note">没有笔记</string>
 
 
     <!-- 主页 -->
     <string name="title_daily_one">每日一句</string>
+    <string name="title_word_search">单词搜索</string>
+    <string name="title_note_book">我的单词本</string>
 
+
+    <string name="word_proEn">Pronunciation</string>
+    <string name="word_proCh">发音</string>
+
+    <string name="word_defEn">Definition</string>
+    <string name="word_defCh">释义</string>
+
+    <string name="word_defCh_Title">中文释义</string>
+    <string name="word_defEn_Title">英文释义</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+
+    <string name="remove_from_notebook">已将项目从单词本中移除</string>
+    <string name="copy_done">已将释义复制到剪辑板</string>
+    <string name="undo">取消</string>
+    <string name="add_to_note">已添加至我的单词本</string>
 </resources>

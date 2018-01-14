@@ -21,18 +21,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.hhb.supermandict.R;
 import com.hhb.supermandict.constant.Constants;
-import com.hhb.supermandict.model.DailyOneItem;
+import com.hhb.supermandict.db.NoteBookDatabaseHelper;
+import com.hhb.supermandict.util.DBUtil;
 import com.hhb.supermandict.util.NetworkUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -53,11 +51,11 @@ public class IndexFragment extends Fragment {
     private ImageView imageViewMain;
     private ImageView ivStar;
     private ImageView ivCopy;
-    private ImageView ivShare;
-    private AppCompatButton button;
 
     private Boolean isMarked = false;
     private String imageUrl = null;
+
+    private NoteBookDatabaseHelper dbHelper;
 
     private Activity activity;
 
@@ -75,7 +73,7 @@ public class IndexFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        dbHelper = new NoteBookDatabaseHelper(getActivity(),"MyNote.db",null,1);
 
     }
 
@@ -95,14 +93,14 @@ public class IndexFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    parseJSONWithGSON(response.body().string());
+                    parseJSONWithJSONObject(response.body().string());
                 }
 
             }
         });
     }
 
-    private void parseJSONWithGSON(String responseData) {
+    private void parseJSONWithJSONObject(String responseData) {
 //        Gson gson = new Gson();
 //        final DailyOneItem dailyOneItem = gson.fromJson(responseData,DailyOneItem.class);
 
@@ -141,9 +139,46 @@ public class IndexFragment extends Fragment {
 
         initViews(view);
 
-        if (!NetworkUtil.isNetworkConnected(getActivity())){
-            showNoNetwork();
-        }
+        ivStar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // 在没有被收藏的情况下
+                if (!isMarked){
+                    ivStar.setImageResource(R.drawable.ic_star_white_24dp);
+                    Snackbar.make(ivStar, R.string.add_to_note, Snackbar.LENGTH_SHORT).show();
+                    isMarked = true;
+
+                    ContentValues values = new ContentValues();
+                    values.put("input",textViewEng.getText().toString());
+                    values.put("output",textViewChi.getText().toString());
+                    DBUtil.insertValue(dbHelper,values);
+
+                    values.clear();
+
+                } else {
+                    ivStar.setImageResource(R.drawable.ic_star_border_white_24dp);
+                    Snackbar.make(ivStar, R.string.remove_from_notebook, Snackbar.LENGTH_SHORT).show();
+                    isMarked = false;
+
+                    DBUtil.deleteValue(dbHelper,textViewEng.getText().toString());
+
+                }
+            }
+        });
+
+        ivCopy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager manager = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText("text", String.valueOf(textViewEng.getText() + "\n" + textViewChi.getText()));
+                manager.setPrimaryClip(clipData);
+
+                Snackbar.make(ivCopy, R.string.copy_done, Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        
 
         sendRequest();
         return view;
@@ -160,14 +195,5 @@ public class IndexFragment extends Fragment {
 
     }
 
-    private void showNoNetwork(){
-        Snackbar.make(button, R.string.no_network_err, Snackbar.LENGTH_INDEFINITE)
-                .setAction("设置", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(Settings.ACTION_SETTINGS));
-                    }
-                }).show();
-    }
 
 }
