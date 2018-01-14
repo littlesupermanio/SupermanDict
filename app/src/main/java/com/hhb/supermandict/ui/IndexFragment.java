@@ -5,6 +5,8 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.hhb.supermandict.R;
 import com.hhb.supermandict.constant.Constants;
 import com.hhb.supermandict.db.NoteBookDatabaseHelper;
+import com.hhb.supermandict.model.NoteBookItem;
 import com.hhb.supermandict.util.DBUtil;
 import com.hhb.supermandict.util.NetworkUtil;
 
@@ -31,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -48,6 +52,7 @@ import static android.content.Context.CLIPBOARD_SERVICE;
 public class IndexFragment extends Fragment {
     private TextView textViewEng;
     private TextView textViewChi;
+    private TextView textViewCount;
     private ImageView imageViewMain;
     private ImageView ivStar;
     private ImageView ivCopy;
@@ -56,6 +61,7 @@ public class IndexFragment extends Fragment {
     private String imageUrl = null;
 
     private NoteBookDatabaseHelper dbHelper;
+    private ArrayList<NoteBookItem> list = new ArrayList<NoteBookItem>();
 
     private Activity activity;
 
@@ -120,6 +126,7 @@ public class IndexFragment extends Fragment {
                                 .asBitmap()
                                 .centerCrop()
                                 .into(imageViewMain);
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -139,6 +146,17 @@ public class IndexFragment extends Fragment {
 
         initViews(view);
 
+        if (DBUtil.queryIfItemExist(dbHelper,textViewEng.getText().toString())){
+            ivStar.setImageResource(R.drawable.ic_star_white_24dp);
+            isMarked = true;
+        } else {
+            ivStar.setImageResource(R.drawable.ic_star_border_white_24dp);
+            isMarked = false;
+        }
+        getDataFromDB();
+
+        textViewCount.setText(list.size()+"");
+
         ivStar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,15 +171,17 @@ public class IndexFragment extends Fragment {
                     values.put("input",textViewEng.getText().toString());
                     values.put("output",textViewChi.getText().toString());
                     DBUtil.insertValue(dbHelper,values);
-
+                    getDataFromDB();
+                    textViewCount.setText(list.size()+"");
                     values.clear();
 
                 } else {
                     ivStar.setImageResource(R.drawable.ic_star_border_white_24dp);
                     Snackbar.make(ivStar, R.string.remove_from_notebook, Snackbar.LENGTH_SHORT).show();
                     isMarked = false;
-
                     DBUtil.deleteValue(dbHelper,textViewEng.getText().toString());
+                    getDataFromDB();
+                    textViewCount.setText(list.size()+"");
 
                 }
             }
@@ -178,7 +198,7 @@ public class IndexFragment extends Fragment {
             }
         });
 
-        
+
 
         sendRequest();
         return view;
@@ -186,14 +206,49 @@ public class IndexFragment extends Fragment {
 
     private void initViews(View view) {
 
-        textViewEng = (TextView) view.findViewById(R.id.text_view_eng);
-        textViewChi = (TextView) view.findViewById(R.id.text_view_chi);
-        imageViewMain = (ImageView) view.findViewById(R.id.image_view_daily);
+        textViewEng = view.findViewById(R.id.text_view_eng);
+        textViewChi =  view.findViewById(R.id.text_view_chi);
+        textViewCount = view.findViewById(R.id.tv_ItemCount);
+        imageViewMain = view.findViewById(R.id.image_view_daily);
 
-        ivStar = (ImageView) view.findViewById(R.id.image_view_mark_star);
-        ivCopy = (ImageView) view.findViewById(R.id.image_view_copy);
+        ivStar = view.findViewById(R.id.image_view_mark_star);
+        ivCopy = view.findViewById(R.id.image_view_copy);
 
     }
 
 
+    private void getDataFromDB() {
+        if (list != null) {
+            list.clear();
+        }
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query("notebook",null,null,null,null,null,null);
+        if (cursor.moveToFirst()){
+            do {
+                String in = cursor.getString(cursor.getColumnIndex("input"));
+                String out = cursor.getString(cursor.getColumnIndex("output"));
+                NoteBookItem item = new NoteBookItem(in,out);
+                list.add(item);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDataFromDB();
+        textViewCount.setText(list.size()+"");
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        getDataFromDB();
+        if (list != null) {
+            textViewCount.setText(list.size()+"");
+        }
+    }
 }

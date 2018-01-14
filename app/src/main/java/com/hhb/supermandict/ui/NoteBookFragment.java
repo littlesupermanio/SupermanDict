@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,24 +41,27 @@ import static android.content.Context.CLIPBOARD_SERVICE;
 
 public class NoteBookFragment extends Fragment {
     private RecyclerView recyclerViewNotebook;
-    private FloatingActionButton fab;
     private ArrayList<NoteBookItem> list = new ArrayList<NoteBookItem>();
     private NoteBookItemAdapter adapter;
-    private TextView tvNoNote;
     private NoteBookDatabaseHelper dbHelper;
-    private FragmentManager manager;
+    private FragmentManager fragmentmanager;
+    private CoordinatorLayout coLayout;
 
+
+    public NoteBookFragment(){
+
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dbHelper = new NoteBookDatabaseHelper(getActivity(),"MyNote.db",null,1);
-        manager = getFragmentManager();
+        fragmentmanager = getFragmentManager();
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_note_book,container,false);
         initViews(view);
 
@@ -69,16 +74,7 @@ public class NoteBookFragment extends Fragment {
 
             @Override
             public void OnItemClick(View view, int position) {
-                NoteBookItem noteBookItem = list.get(position);
-                String word = noteBookItem.getInput();
-                WordFragment wordFragment = new WordFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("queryWord", word);
-                wordFragment.setArguments(bundle);
-                FragmentTransaction ft = manager.beginTransaction();
-                ft.replace(R.id.container_main,wordFragment);
-                ft.addToBackStack(null);
-                ft.commit();
+
             }
 
             @Override
@@ -94,7 +90,7 @@ public class NoteBookFragment extends Fragment {
                         ClipData clipData = ClipData.newPlainText("text", String.valueOf(item1.getInput() + "\n" + item1.getOutput()));
                         manager.setPrimaryClip(clipData);
 
-                        Snackbar.make(fab, R.string.copy_done, Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(coLayout, R.string.copy_done, Snackbar.LENGTH_SHORT).show();
 
                         break;
 
@@ -109,7 +105,7 @@ public class NoteBookFragment extends Fragment {
                         adapter.notifyItemRemoved(position);
                         adapter.notifyItemRangeChanged(position,list.size());
 
-                        Snackbar.make(fab, R.string.remove_from_notebook, Snackbar.LENGTH_SHORT)
+                        Snackbar.make(coLayout, R.string.remove_from_notebook, Snackbar.LENGTH_SHORT)
                                 .setAction(R.string.undo, new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -129,6 +125,18 @@ public class NoteBookFragment extends Fragment {
 
                         break;
 
+                    case R.id.image_view_search:
+                        NoteBookItem noteBookItem = list.get(position);
+                        String word = noteBookItem.getInput();
+                        WordFragment wordFragment = new WordFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("queryWord", word);
+                        wordFragment.setArguments(bundle);
+                        FragmentTransaction ft = fragmentmanager.beginTransaction();
+                        ft.replace(R.id.container_main,wordFragment);
+                        ft.addToBackStack(null);
+                        ft.commit();
+                        break;
 
                     default:
                         break;
@@ -143,7 +151,7 @@ public class NoteBookFragment extends Fragment {
         recyclerViewNotebook = (RecyclerView) view.findViewById(R.id.recycler_view_notebook);
         recyclerViewNotebook.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        fab = (FloatingActionButton) view.findViewById(R.id.fab_note);
+        coLayout = view.findViewById(R.id.notebook_layout);
 
     }
 
@@ -160,6 +168,9 @@ public class NoteBookFragment extends Fragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         getDataFromDB();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
 

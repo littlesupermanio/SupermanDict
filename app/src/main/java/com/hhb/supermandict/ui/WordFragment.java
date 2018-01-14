@@ -91,9 +91,10 @@ public class WordFragment extends Fragment {
         if (bundle != null)
         {
             queryWord = bundle.getString("queryWord");
+            collapsingToolbarLayout.setTitle(queryWord);
+            sendRequest();
         }
-        collapsingToolbarLayout.setTitle(queryWord);
-        sendRequest();
+
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override

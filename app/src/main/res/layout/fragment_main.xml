@@ -28,15 +28,53 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp">
+            android:layout_marginLeft="@dimen/daily_horizontal_margin"
+            android:layout_marginRight="@dimen/daily_horizontal_margin"
+            android:layout_marginTop="@dimen/daily_vertical_margin"
+            android:layout_marginBottom="@dimen/daily_vertical_margin"
+            >
 
-            <android.support.v7.widget.RecyclerView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/recyclerView" />
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/your_Notebook"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="20sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tv_ItemCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="0"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="45sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/tv_ItemCount"
+                        android:layout_alignBottom="@+id/tv_ItemCount"
+                        android:layout_marginBottom="8sp"
+                        android:layout_marginLeft="10dp"
+                        android:text="个项目"
+                        android:textColor="@color/colorGray" />
+                </RelativeLayout>
+
+            </LinearLayout>
 
         </android.support.v7.widget.CardView>
 

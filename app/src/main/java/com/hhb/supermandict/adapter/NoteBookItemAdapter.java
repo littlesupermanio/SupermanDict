@@ -56,14 +56,18 @@ public class NoteBookItemAdapter extends RecyclerView.Adapter<NoteBookItemAdapte
 
         TextView tvOutput;
         ImageView ivCopy;
+        ImageView ivSearch;
+        ImageView ivMarkStar;
 
         OnRecyclerViewOnClickListener listener;
 
         public ItemViewHolder(View itemView, final OnRecyclerViewOnClickListener listener) {
             super(itemView);
 
-            tvOutput = (TextView) itemView.findViewById(R.id.text_view_output);
-            ivCopy = (ImageView) itemView.findViewById(R.id.image_view_copy);
+            tvOutput = itemView.findViewById(R.id.text_view_output);
+            ivCopy = itemView.findViewById(R.id.image_view_copy);
+            ivSearch =  itemView.findViewById(R.id.image_view_search);
+            ivMarkStar = itemView.findViewById(R.id.image_view_mark_star);
 
             this.listener = listener;
             itemView.setOnClickListener(this);
@@ -75,6 +79,19 @@ public class NoteBookItemAdapter extends RecyclerView.Adapter<NoteBookItemAdapte
                 }
             });
 
+            ivSearch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.OnSubViewClick(ivSearch,getLayoutPosition());
+                }
+            });
+
+            ivMarkStar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.OnSubViewClick(ivMarkStar,getLayoutPosition());
+                }
+            });
 
         }
 

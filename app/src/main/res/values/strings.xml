@@ -36,4 +36,6 @@
     <string name="copy_done">已将释义复制到剪辑板</string>
     <string name="undo">取消</string>
     <string name="add_to_note">已添加至我的单词本</string>
+
+    <string name="your_Notebook">你的单词本里共有</string>
 </resources>
