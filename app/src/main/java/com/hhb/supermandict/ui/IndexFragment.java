@@ -14,7 +14,11 @@ import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.CardView;
+import android.text.BoringLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,9 +60,12 @@ public class IndexFragment extends Fragment {
     private ImageView imageViewMain;
     private ImageView ivStar;
     private ImageView ivCopy;
+    private CardView cvStoreHint;
 
     private Boolean isMarked = false;
     private String imageUrl = null;
+
+    private Boolean isRendered = false;
 
     private NoteBookDatabaseHelper dbHelper;
     private ArrayList<NoteBookItem> list = new ArrayList<NoteBookItem>();
@@ -199,8 +206,13 @@ public class IndexFragment extends Fragment {
         });
 
 
+        if(!isRendered)
+        {
+            sendRequest();
+            isRendered = true;
+        }
 
-        sendRequest();
+
         return view;
     }
 
@@ -210,6 +222,7 @@ public class IndexFragment extends Fragment {
         textViewChi =  view.findViewById(R.id.text_view_chi);
         textViewCount = view.findViewById(R.id.tv_ItemCount);
         imageViewMain = view.findViewById(R.id.image_view_daily);
+        cvStoreHint = view.findViewById(R.id.cardView_StoreHint);
 
         ivStar = view.findViewById(R.id.image_view_mark_star);
         ivCopy = view.findViewById(R.id.image_view_copy);
@@ -239,6 +252,7 @@ public class IndexFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        sendRequest();
         getDataFromDB();
         textViewCount.setText(list.size()+"");
     }

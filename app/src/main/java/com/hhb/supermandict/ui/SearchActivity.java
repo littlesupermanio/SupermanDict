@@ -45,6 +45,7 @@ public class SearchActivity extends AppCompatActivity {
                 intent.putExtra("queryWord",query);
                 intent.setAction("com.hhb.supermandict.wordsearch");
                 startActivity(intent);
+                finish();
                 return true;
             }
 

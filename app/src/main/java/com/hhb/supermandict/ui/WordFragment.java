@@ -65,6 +65,10 @@ public class WordFragment extends Fragment {
     private NoteBookDatabaseHelper dbHelper;
     private boolean isMarked = false;
 
+
+    private MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer2;
+
     public WordFragment(){
 
     }
@@ -92,8 +96,13 @@ public class WordFragment extends Fragment {
         {
             queryWord = bundle.getString("queryWord");
             collapsingToolbarLayout.setTitle(queryWord);
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer2 = new MediaPlayer();
+            mediaPlayer2.setAudioStreamType(AudioManager.STREAM_MUSIC);
             sendRequest();
         }
+
 
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -125,6 +134,10 @@ public class WordFragment extends Fragment {
 
             }
         });
+
+
+
+
         return view;
     }
 
@@ -156,7 +169,7 @@ public class WordFragment extends Fragment {
                 if (response.isSuccessful()) {
                     parseJSONWithGSON(response.body().string());
                 }
-
+                response.body().close();
             }
         });
     }
@@ -177,41 +190,52 @@ public class WordFragment extends Fragment {
                     final String us_audio = model.getUs_audio();
                     final String uk_audio = model.getUk_audio();
 
+                    Log.e("us_audio",us_audio );
+                    try {
+                        mediaPlayer.setDataSource(us_audio);
+                        mediaPlayer2.setDataSource(uk_audio);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                     AmEButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            MediaPlayer mediaPlayer = new MediaPlayer();
-                            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                             try {
-                                mediaPlayer.setDataSource(us_audio);
-                                mediaPlayer.prepare();
+                                mediaPlayer.prepareAsync();
+                                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                    @Override
+                                    public void onPrepared(MediaPlayer mediaPlayer) {
+                                        mediaPlayer.start();
+                                    }
+                                });
+
                             } catch (Exception e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
-                            mediaPlayer.start();
                         }
                     });
 
                     BrEButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            MediaPlayer mediaPlayer2 = new MediaPlayer();
-                            mediaPlayer2.setAudioStreamType(AudioManager.STREAM_MUSIC);
                             try {
-                                mediaPlayer2.setDataSource(uk_audio);
-                                mediaPlayer2.prepare();
+                                mediaPlayer2.prepareAsync();
+                                mediaPlayer2.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                    @Override
+                                    public void onPrepared(MediaPlayer mediaPlayer) {
+                                        mediaPlayer.start();
+                                    }
+                                });
+
                             } catch (Exception e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
-                            mediaPlayer2.start();
                         }
                     });
 
+
                     result = "\nAmE:" + p.getUs() + "\nBrE:" + p.getUk() + "\n";
-
-
 
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -237,16 +261,22 @@ public class WordFragment extends Fragment {
                 Log.e("result",smodel.getMsg()+"");
             }
         }else{
-            detail_view.setVisibility(View.INVISIBLE);
-            Snackbar snackbar = Snackbar.make(collapsingToolbarLayout, R.string.no_result, Snackbar.LENGTH_SHORT);
-            snackbar.setAction(R.string.retype, new View.OnClickListener() {
+            getActivity().runOnUiThread(new Runnable() {
                 @Override
-                public void onClick(View view) {
-                    getActivity().finish();
+                public void run() {
+                    detail_view.setVisibility(View.INVISIBLE);
+                    Snackbar snackbar = Snackbar.make(collapsingToolbarLayout, R.string.no_result, Snackbar.LENGTH_SHORT);
+                    snackbar.setAction(R.string.retype, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getActivity().finish();
+                        }
+                    });
+                    snackbar.show();
+                    floatingActionButton.setVisibility(View.INVISIBLE);
                 }
             });
-            snackbar.show();
-            floatingActionButton.setVisibility(View.INVISIBLE);
+
         }
 
     }

@@ -164,6 +164,8 @@ public class NoteBookFragment extends Fragment {
         }
     }
 
+
+    //hidden状态改变的时候触发的事情
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
