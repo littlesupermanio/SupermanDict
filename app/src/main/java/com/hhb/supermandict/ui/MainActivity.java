@@ -154,10 +154,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             showHideFragment(2);
 
-        } else if (id == R.id.nav_about) {
-
-            showHideFragment(3);
-
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

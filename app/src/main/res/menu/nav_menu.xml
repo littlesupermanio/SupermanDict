@@ -11,10 +11,5 @@
             android:icon="@drawable/ic_book_white_24dp"
             android:title="笔记本"
             />
-        <item
-            android:id="@+id/nav_about"
-            android:icon="@drawable/ic_insert_white_24dp"
-            android:title="关于"
-            />
     </group>
 </menu>

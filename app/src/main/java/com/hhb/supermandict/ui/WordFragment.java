@@ -246,8 +246,8 @@ public class WordFragment extends Fragment {
                                     isMarked = true;
                                 }
 
-                                AmEButton.setText("美音："+p.getUs());
-                                BrEButton.setText("英音："+p.getUk());
+                                AmEButton.setText("美音 "+p.getUs());
+                                BrEButton.setText("英音 "+p.getUk());
                                 tv_DefCh_Detail.setText(cn_def.getDefn());
                                 tv_DefEn_Detail.setText(en_def.getDefn());
 
