@@ -8,7 +8,7 @@
 
 | 首页 | 单词页 | 笔记本 |
 | :-------------: | :-------------: |:-------------: | 
-| ![MainPage](./art/mainpage.png) | ![Word](./art/word.png) | ![Notebook](./art/notebook.png) | 
+| ![MainPage](./art/mainpage.jpg) | ![Word](./art/word.jpg) | ![Notebook](./art/notebook.jpg) |
 
 ## 编译&运行
 
