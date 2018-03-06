@@ -1,7 +1,5 @@
 # 超人词典
 
-## 简介
-
 超人词典是一款查单词APP，它利用扇贝单词的API进行搜索单词，找到它对应的中文释义。整体采用Material Design设计布局，通过okhttp请求API。
 
 ## 屏幕截图
@@ -35,4 +33,4 @@ git clone https://github.com/HoHoibin/SupermanDict.git
 
 ## 许可证
 
-Apache2.0 license.
+Apache2.0 license. See [LICENSE](./LICENSE) for more details.
